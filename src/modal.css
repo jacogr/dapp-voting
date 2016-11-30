@@ -40,11 +40,16 @@
   }
 
   .close {
+    background: #eee;
+    border-radius: 1em;
     cursor: pointer;
     font-size: 2em;
+    line-height: 1.5em;
     position: absolute;
     right: 20px;
     top: 20px;
+    width: 1.5em;
+
   }
 
   .title {

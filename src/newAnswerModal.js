@@ -22,8 +22,8 @@ export default class NewQuestionModal extends Component {
       return null;
     }
 
-    let yesLabel = 'Yes, I agree';
-    let noLabel = "No, I don't agree";
+    let yesLabel = 'Yes. Yay. Ja.';
+    let noLabel = 'No. Nay. Nein.';
     if (store.answerFee.gt(0)) {
       const answerFee = <small>{ api.util.fromWei(store.answerFee).toFormat(3) } ETH</small>;
 
