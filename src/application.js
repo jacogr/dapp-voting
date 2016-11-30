@@ -29,7 +29,7 @@ export default class Application extends Component {
         <NewAnswerModal store={ store } />
         <NewQuestionModal store={ store } />
         <Question store={ store } />
-        <EventsNewQuestion events={ store.eventsNewQuestion } />
+        <EventsNewQuestion store={ store } />
         <Error error={ store.error } />
       </div>
     );

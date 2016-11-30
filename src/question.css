@@ -19,6 +19,7 @@
 
   .title {
     margin: 0 auto;
+    max-width: 30em;
     color: $header-color;
     font-size: $header-size;
   }

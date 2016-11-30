@@ -11,15 +11,16 @@ const { api } = window.parity;
 
 export default class Store {
   @observable accounts = [];
+  @observable answerEvents = [];
   @observable answerFee = new BigNumber(0);
   @observable blockNumber = new BigNumber(0);
+  @observable blocks = {};
   @observable count = 0;
   @observable currentAccount = null;
   @observable error = null;
-  @observable eventsNewAnswer = [];
-  @observable eventsNewQuestion = [];
   @observable hasCurrentVoted = false;
   @observable question = null;
+  @observable questionEvents = [];
   @observable questionFee = new BigNumber(0);
   @observable questionIndex = -1;
   @observable questionLoading = false;
@@ -36,7 +37,16 @@ export default class Store {
     this._subIdAnswers = 0;
     this._subIdQuestions = 0;
 
+    this._questionEventsMined = [];
+    this._questionEventsPending = [];
+
     this.initialise();
+  }
+
+  @action addBlock = (block) => {
+    const blockNumber = block.blockNumber.toNumber();
+
+    this.blocks = Object.assign({}, this.blocks, { [blockNumber]: block });
   }
 
   @action setAccounts = (accountsInfo) => {
@@ -105,6 +115,14 @@ export default class Store {
       this.questionIndex = questionIndex;
       this.quetionLoading = false;
       this.queryIndex = questionIndex;
+    });
+  }
+
+  @action setQuestionEvents = (pending, mined) => {
+    transaction(() => {
+      this._questionEventsMined = mined;
+      this._questionEventsPending = pending;
+      this.questionEvents = pending.concat(mined);
     });
   }
 
@@ -308,6 +326,29 @@ export default class Store {
       });
   }
 
+  sortEvents = (a, b) => {
+    return b.blockNumber.cmp(a.blockNumber) || b.logIndex.cmp(a.logIndex);
+  }
+
+  logToEvent = (log) => {
+    const key = api.util.sha3(JSON.stringify(log));
+    const { blockNumber, logIndex, transactionHash, transactionIndex, params, type } = log;
+
+    return {
+      type: log.event,
+      state: type,
+      blockNumber,
+      logIndex,
+      transactionHash,
+      transactionIndex,
+      params: Object.keys(params).reduce((data, name) => {
+        data[name] = params[name].value;
+        return data;
+      }, {}),
+      key
+    };
+  }
+
   answerEventCallback = (error, _logs) => {
     if (error) {
       console.warn('Store:answerEventCallback', error);
@@ -320,6 +361,38 @@ export default class Store {
       console.warn('Store:questionEventCallback', error);
       return;
     }
+
+    const logs = _logs.map(this.logToEvent);
+
+    const mined = logs
+      .filter((log) => log.state === 'mined')
+      .map((log) => {
+        const blockNumber = log.blockNumber.toNumber();
+
+        if (blockNumber && !this.blocks[blockNumber]) {
+          api.eth
+            .getBlockByNumber(blockNumber)
+            .then((block) => {
+              block.blockNumber = log.blockNumber;
+              this.addBlock(block);
+            });
+        }
+
+        return Object.assign(log, { block: this.blocks[blockNumber] });
+      })
+      .reverse()
+      .concat(this._questionEventsMined)
+      .sort(this.sortEvents);
+
+    const pending = logs
+      .filter((log) => log.state === 'pending')
+      .reverse()
+      .filter((event) => !this._questionEventsPending.find((log) => log.params.method === event.params.method))
+      .concat(this._questionEventsPending)
+      .filter((event) => !this._questionEventsMined.find((log) => log.params.method === event.params.method))
+      .sort(this.sortEvents);
+
+    this.setQuestionEvents(pending, mined);
   }
 
   checkVoteStatus () {

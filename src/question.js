@@ -18,7 +18,7 @@ export default class Question extends Component {
 
   render () {
     const { store } = this.props;
-    const { eventsNewAnswer, question, questionIndex } = store;
+    const { answerEvents, question, questionIndex } = store;
 
     if (questionIndex === -1) {
       return null;
@@ -46,7 +46,7 @@ export default class Question extends Component {
               api.util.fromWei(question.valueYes).toNumber(), api.util.fromWei(question.valueNo).toNumber()
             ] } />
         </div>
-        <EventsNewAnswer events={ eventsNewAnswer } />
+        <EventsNewAnswer events={ answerEvents } />
       </div>
     );
   }
