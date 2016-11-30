@@ -1,0 +1,8 @@
+{
+  "id": "dapp-voting",
+  "name": "Voting",
+  "description": "Ask questions, receive yes/no sentiments from the community",
+  "author": "Jaco Greeff",
+  "version": "0.0.1",
+  "iconUrl": "dist/fc39d586faae631ce7702e77916a338f.jpg"
+}

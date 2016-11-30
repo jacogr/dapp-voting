@@ -1,0 +1,13 @@
+/* MIT License, Copyright 2016, Jaco Greeff <jacogr@gmail.com> */
+
+$button-color: #333;
+$button-disabled-color: #bbb;
+$button-font-size: 1.25em;
+$button-margin: 0.125em;
+$button-radius: 0.375em;
+
+$byline-color: #bbb;
+$byline-size: 0.75em;
+
+$header-color: #888;
+$header-size: 2em;

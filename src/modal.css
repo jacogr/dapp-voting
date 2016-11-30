@@ -1,0 +1,55 @@
+/* MIT License, Copyright 2016, Jaco Greeff <jacogr@gmail.com> */
+
+@import './_variables.css';
+
+.modal {
+  background: rgba(255, 255, 255, 0.975);
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  text-align: center;
+  top: 0;
+  z-index: 100;
+
+  .buttons {
+    margin-top: 1em;
+    text-align: right;
+  }
+
+  .content {
+    margin: 0 auto;
+    max-width: 40em;
+    padding: 0;
+
+    input, textarea, select {
+      display: block;
+      border: 1px solid #999;
+      width: 100%;
+      margin-top: 0.5em;
+    }
+
+    select {
+      background: white;
+    }
+
+    textarea {
+      height: 6.25em;
+      width: 100%;
+    }
+  }
+
+  .close {
+    cursor: pointer;
+    font-size: 2em;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+  }
+
+  .title {
+    color: $header-color;
+    font-size: $header-size;
+    margin: 1.5em 0;
+  }
+}

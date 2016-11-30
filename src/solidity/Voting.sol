@@ -1,6 +1,6 @@
-//! MIT
-//! A simple voting with account balanaces contract
-//! Jaco Greeff <jacogr@gmail.com>
+//! MIT License, Copyright 2016, Jaco Greeff <jacogr@gmail.com>
+//! A simple voting with account balances contract. Ask a question, keep track
+//! of the yes/no answers and the strength (associated balances) of such votes
 
 pragma solidity ^0.4.1;
 
@@ -20,7 +20,7 @@ contract Owned {
 
   // set a new owner
   function setOwner(address _newOwner) only_owner {
-    NewOwner(owner, _new);
+    NewOwner(owner, _newOwner);
     owner = _newOwner;
   }
 }
@@ -28,10 +28,10 @@ contract Owned {
 // the voting contract
 contract Voting is Owned {
   // emitted when a new question was asked
-  NewQuestion(address indexed owner, uint index, string question);
+  event NewQuestion(address indexed owner, uint index, string question);
 
   // emitted when a new answer is provided
-  NewAnswer(uint indexed index, uint value, bool isYes);
+  event NewAnswer(uint indexed index, uint value, bool isYes);
 
   // define a question with totals & voters
   struct Question {
@@ -46,6 +46,10 @@ contract Voting is Owned {
 
   // the list of questions
   Question[] questions;
+
+  // total voting tallies
+  uint public totalValue = 0;
+  uint public totalVotes = 0;
 
   // the applicable question & answer fees
   uint public answerFee = 0;
@@ -99,7 +103,7 @@ contract Voting is Owned {
   }
 
   // tests if the sender has voted
-  function hasSenderVoted () constant returns (bool) {
+  function hasSenderVoted (uint _index) constant returns (bool) {
     return questions[_index].voters[msg.sender];
   }
 
@@ -117,7 +121,10 @@ contract Voting is Owned {
   }
 
   // answer a question
-  function newAnswer (uint _index, bool _isYes) payable is_answer_paid is_valid_question(_index) has_not_voted(_index) return (bool) {
+  function newAnswer (uint _index, bool _isYes) payable is_answer_paid is_valid_question(_index) has_not_voted(_index) returns (bool) {
+    totalVotes += 1;
+    totalValue += msg.sender.balance;
+
     questions[_index].voters[msg.sender] = true;
 
     if (_isYes) {
@@ -128,25 +135,28 @@ contract Voting is Owned {
       questions[_index].votesNo += 1;
     }
 
-    newAnswer(_index, msg.sender.balance, _isYes);
+    NewAnswer(_index, msg.sender.balance, _isYes);
 
     return true;
   }
 
   // adjust the fee for providing answers
-  function setAnswerFee (uint _fee) only_owner {
+  function setAnswerFee (uint _fee) only_owner returns (bool) {
     answerFee = _fee;
+    return true;
   }
 
   // adjust the fee for asking questions
-  function setQuestionFee (uint _fee) only_owner {
+  function setQuestionFee (uint _fee) only_owner returns (bool) {
     questionFee = _fee;
+    return true;
   }
 
   // drain all accumulated funds
-  function drain() only_owner {
+  function drain() only_owner  returns (bool) {
     if (!msg.sender.send(this.balance)) {
       throw;
     }
+    return true;
   }
 }

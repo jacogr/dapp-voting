@@ -1,0 +1,25 @@
+/* MIT License, Copyright 2016, Jaco Greeff <jacogr@gmail.com> */
+
+@import './_variables.css';
+
+.question {
+  text-align: center;
+
+  .answers {
+  }
+
+  .byline {
+    color: $byline-color;
+    font-size: $byline-size;
+  }
+
+  .header {
+    padding: 1.75em 7.5em;
+  }
+
+  .title {
+    margin: 0 auto;
+    color: $header-color;
+    font-size: $header-size;
+  }
+}

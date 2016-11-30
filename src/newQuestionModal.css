@@ -1,0 +1,11 @@
+/* MIT License, Copyright 2016, Jaco Greeff <jacogr@gmail.com> */
+
+.lengthCount {
+  font-size: 0.75em;
+  padding-top: 0.5em;
+  text-align: right;
+
+  &.error {
+    color: #f33;
+  }
+}
