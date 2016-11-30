@@ -60,7 +60,8 @@ export default class NewQuestionModal extends Component {
   }
 
   onChangeQuestion = (event) => {
-    const question = event.target.value.trim();
+    const value = event.target.value;
+    const question = `${value.trim()}${value[value.length - 1] === ' ' ? ' ' : ''}`;
     const questionCharactersLeft = MAX_CHARACTERS - question.length;
 
     this.setState({ question, questionCharactersLeft });
@@ -72,7 +73,7 @@ export default class NewQuestionModal extends Component {
   }
 
   onSubmit = () => {
-    this.props.store.newQuestion(this.state.question);
+    this.props.store.newQuestion(this.state.question.trim());
     this.onClose();
   }
 }
