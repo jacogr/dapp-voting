@@ -214,23 +214,23 @@ export default class Store {
         });
         this.checkVoteStatus();
 
-        if (isNew) {
-          if (this._subIdAnswers) {
-            this._voting.unsubscribe(this._subIdAnswers);
-            this._subIdAnswers = 0;
-          }
-
-          return this._voting
-            .subscribe('NewAnswer', {
-              fromBlock: 0,
-              toBlock: 'pending',
-              limit: 50,
-              topics: [index]
-            }, this.answerEventCallback)
-            .then((subscriptionId) => {
-              this._subIdAnswers = subscriptionId;
-            });
-        }
+        // if (isNew) {
+        //   if (this._subIdAnswers) {
+        //     this._voting.unsubscribe(this._subIdAnswers);
+        //     this._subIdAnswers = 0;
+        //   }
+        //
+        //   return this._voting
+        //     .subscribe('NewAnswer', {
+        //       fromBlock: 0,
+        //       toBlock: 'pending',
+        //       limit: 50,
+        //       topics: [index]
+        //     }, this.answerEventCallback)
+        //     .then((subscriptionId) => {
+        //       this._subIdAnswers = subscriptionId;
+        //     });
+        // }
       })
       .catch((error) => {
         console.error('Store:loadQuestion', error);
