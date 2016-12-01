@@ -385,6 +385,10 @@ export default class Store {
     };
   }
 
+  eventEqual = (a, b) => {
+    return a.params.value.eq(b.params.value) && a.params.answer.eq(b.params.answer);
+  }
+
   formatEvents = (_logs, pending, mined) => {
     const logs = _logs.map(this.logToEvent);
 
@@ -411,9 +415,9 @@ export default class Store {
     pending = logs
       .filter((log) => log.state === 'pending')
       .reverse()
-      .filter((event) => !pending.find((log) => log.params.index.eq(event.params.index)))
+      .filter((event) => !pending.find((log) => this.eventEqual(event, log)))
       .concat(pending)
-      .filter((event) => !mined.find((log) => log.params.index.eq(event.params.index)))
+      .filter((event) => !mined.find((log) => this.eventEqual(event, log)))
       .sort(this.sortEvents);
 
     return [pending, mined];
@@ -424,8 +428,6 @@ export default class Store {
       console.warn('Store:answerEventCallback', error);
       return;
     }
-
-    console.log(_logs);
 
     const [pending, mined] = this.formatEvents(_logs, this._answerEventsPending, this._answerEventsMined);
     this.setAnswerEvents(pending, mined);

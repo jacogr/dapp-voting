@@ -131,7 +131,7 @@ $header-size: 2em;
   height: 20em;
   width: 20em;
 
-  .title {
+  .chartTitle {
     color: $header-color;
     font-size: 1.25em;
   }

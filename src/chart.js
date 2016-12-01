@@ -17,7 +17,7 @@ export default class Chart extends Component {
 
     return (
       <div className={ styles.chart }>
-        <div className={ styles.title }>{ title }</div>
+        <div className={ styles.chartTitle }>{ title }</div>
         <Doughnut
           data={ {
             labels,
