@@ -5,12 +5,13 @@ import { observer } from 'mobx-react';
 
 import { formatBlockTimestamp } from './format';
 
-import styles from './events.css';
+import styles from './index.css';
 
 @observer
 export default class EventsNewQuestion extends Component {
   static propTypes = {
-    store: PropTypes.object.isRequired
+    store: PropTypes.object.isRequired,
+    onClick: PropTypes.func
   }
 
   render () {
@@ -21,7 +22,7 @@ export default class EventsNewQuestion extends Component {
     }
 
     return (
-      <div className={ styles.events }>
+      <div className={ styles.eventsQuestions }>
         <table>
           { this.renderRows() }
         </table>
@@ -30,14 +31,19 @@ export default class EventsNewQuestion extends Component {
   }
 
   renderRows () {
-    const { store } = this.props;
+    const { store, onClick } = this.props;
 
     return store.questionEvents.map((event) => {
       const index = parseInt(event.params.index, 10) + 1;
-      const navigateTo = () => store.loadQuestion(index);
+      const navigateTo = (event) => {
+        store.loadQuestion(index);
+        onClick && onClick(event);
+      };
 
       return (
-        <tr key={ event.key }>
+        <tr
+          className={ event.state === 'pending' ? styles.pending : '' }
+          key={ event.key }>
           <td className={ styles.blockNumber }>
             { formatBlockTimestamp(store.blocks, event.blockNumber) }
           </td>

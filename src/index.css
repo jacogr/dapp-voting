@@ -1,5 +1,18 @@
 /* MIT License, Copyright 2016, Jaco Greeff <jacogr@gmail.com> */
 
+$button-color: #333;
+$button-color-hover: #f80;
+$button-disabled-color: #bbb;
+$button-font-size: 1.25em;
+$button-margin: 0.25em;
+$button-radius: 0.375em;
+
+$byline-color: #bbb;
+$byline-size: 1em;
+
+$header-color: #888;
+$header-size: 2em;
+
 :root,
 :root body {
   background: #fff;
@@ -26,4 +39,325 @@
 
 :root :global(#container) > div {
   flex: 1;
+}
+
+.application {
+  input, select, textarea {
+    border: none;
+    border-radius: $button-radius;
+    box-sizing: border-box;
+    color: $button-color;
+    font-size: $button-font-size;
+    line-height: 1em;
+    padding: 0.25em;
+    margin: 0;
+
+    &[disabled] {
+      color: $button-disabled-color;
+    }
+  }
+
+  input {
+    &[type="number"] {
+      text-align: right;
+    }
+  }
+
+  select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background: white;
+    height: 2em;
+
+    &[disabled] {
+      color: $button-disabled-color;
+    }
+  }
+
+  textarea {
+    line-height: 1.25em;
+    resize: none;
+  }
+}
+
+.button {
+  display: inline-block;
+  margin: $button-margin;
+  min-width: 5em;
+  text-align: center;
+
+  button {
+    background: $button-color;
+    border: none;
+    border-radius: 3em;
+    color: #fff;
+    cursor: pointer;
+    outline: none;
+    padding: 1.5em;
+    text-align: center;
+    vertical-align: middle;
+
+    i {
+      font-size: 3em;
+      line-height: 1em;
+      vertical-align: middle;
+      width: 1em;
+    }
+
+    &:hover {
+      background: $button-color-hover;
+    }
+
+    &[disabled] {
+      background: $button-disabled-color;
+      cursor: default;
+    }
+  }
+
+  .label {
+    font-size: 1em;
+  }
+}
+
+.buttonRow {
+  margin: 1em 0 2em 0;
+  text-align: right;
+}
+
+.chart {
+  display: inline-block;
+  padding: 1em;
+  height: 20em;
+  width: 20em;
+
+  .title {
+    color: $header-color;
+    font-size: 1.25em;
+  }
+}
+
+.error {
+  background: rgba(200, 0, 0, 1);
+  bottom: 0;
+  color: #fff;
+  left: 0;
+  padding: 0.5em 1em;
+  position: fixed;
+  right: 0;
+  text-align: center;
+  z-index: 200;
+}
+
+.eventsAnswers {
+  text-align: center;
+
+  .container {
+    margin: 0 auto;
+    max-width: 50em;
+    padding: 1.75em 0 8em 0;
+  }
+
+  .event {
+    border-radius: 0.25em;
+    display: inline-block;
+    margin: 0.25em;
+    padding: 0.25em 0.5em;
+    color: white;
+
+    &.pending {
+      opacity: 0.5;
+    }
+
+    &.yay {
+      background: #4d4;
+    }
+
+    &.nay {
+      background: #d44;
+    }
+
+    &.may {
+      background: #44d;
+    }
+  }
+}
+
+.eventsQuestions {
+  text-align: center;
+
+  table {
+    margin: 2em auto;
+    max-width: 40em;
+    border: 0;
+  }
+
+  tr {
+    &.pending {
+      opacity: 0.5;
+    }
+  }
+
+  td {
+    text-align: left;
+    padding: 0.25em;
+    vertical-align: top;
+
+    &.blockNumber {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    &.index {
+      text-align: right;
+    }
+
+    &.question {
+    }
+  }
+
+  a, a:active, a:visited {
+    color: #33f;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.modal {
+  background: rgba(255, 255, 255, 0.975);
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  position: fixed;
+  right: 0;
+  text-align: center;
+  top: 0;
+  z-index: 100;
+
+  .content {
+    margin: 0 auto;
+    max-width: 40em;
+    padding: 0;
+
+    input, textarea, select {
+      display: block;
+      border: 1px solid #999;
+      width: 100%;
+      margin-top: 0.5em;
+    }
+
+    select {
+      background: white;
+    }
+
+    textarea {
+      height: 6.25em;
+      width: 100%;
+    }
+
+    p {
+      margin: 0;
+      padding: 0 0 1em 0;
+      line-height: 1.5em;
+    }
+
+    b {
+      background: #eee;
+      padding: 0.25em;
+      margin: -0.25em 0;
+    }
+  }
+
+  .close {
+    position: absolute;
+    right: 1em;
+    top: 1em;
+  }
+
+  .title {
+    color: $header-color;
+    font-size: $header-size;
+    margin: 1.5em auto;
+    max-width: 27em;
+  }
+}
+
+.navigation {
+  background: rgba(255, 255, 255, 0.75);
+  bottom: 0;
+  left: 0;
+  padding: 0.25em 0;
+  position: fixed;
+  right: 0;
+  text-align: center;
+  z-index: 50;
+
+  .inputButton {
+    background: $button-color;
+    border-radius: $button-radius;
+    display: inline-block;
+    margin: $button-margin;
+    padding: 0;
+
+    &[disabled] {
+      background: $button-disabled-color;
+    }
+
+    button {
+      margin: 0;
+    }
+
+    input {
+      width: 5em;
+      margin: 0 0 0 0.25em;
+      text-align: right;
+    }
+  }
+
+  .spaced {
+    margin-right: 3em;
+  }
+}
+
+.question {
+  text-align: center;
+
+  .answers {
+  }
+
+  .byline {
+    color: $byline-color;
+    font-size: $byline-size;
+  }
+
+  .header {
+    padding: 1.75em 7.5em;
+  }
+
+  .title {
+    margin: 0 auto;
+    max-width: 30em;
+    color: $header-color;
+    font-size: $header-size;
+  }
+}
+
+.status {
+  background: $button-color;
+  color: #fff;
+  padding: 0.5em 1em;
+  text-align: center;
+}
+
+.textareaInfo {
+  font-size: 0.75em;
+  padding-top: 0.5em;
+  text-align: right;
+
+  &.error {
+    color: #f33;
+  }
 }

@@ -2,7 +2,9 @@
 
 import React, { Component, PropTypes } from 'react';
 
-import styles from './modal.css';
+import Button from './button';
+
+import styles from './index.css';
 
 export default class Modal extends Component {
   static propTypes = {
@@ -17,13 +19,17 @@ export default class Modal extends Component {
 
     return (
       <div className={ styles.modal }>
-        <div className={ styles.close } onClick={ onClose }>X</div>
+        <div className={ styles.close }>
+          <Button
+            icon='close'
+            onClick={ onClose } />
+        </div>
         <div className={ styles.title }>
           { title }
         </div>
         <div className={ styles.content }>
           { children }
-          <div className={ styles.buttons }>
+          <div className={ styles.buttonRow }>
             { buttons }
           </div>
         </div>

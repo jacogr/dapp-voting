@@ -3,14 +3,14 @@
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 
+import { api } from './parity';
+
 import AccountSelector from './AccountSelector';
 import Button from './button';
 import Modal from './modal';
 
-const { api } = window.parity;
-
 @observer
-export default class NewQuestionModal extends Component {
+export default class ModalNewAnswer extends Component {
   static propTypes = {
     store: PropTypes.object.isRequired
   }
@@ -22,13 +22,15 @@ export default class NewQuestionModal extends Component {
       return null;
     }
 
-    let yesLabel = 'Yes. Yay. Ja.';
-    let noLabel = 'No. Nay. Nein.';
+    let yesLabel = 'yes';
+    let noLabel = 'no';
+    let maybeLabel = 'maybe';
     if (store.answerFee.gt(0)) {
       const answerFee = <small>{ api.util.fromWei(store.answerFee).toFormat(3) } ETH</small>;
 
-      yesLabel = <span>{ yesLabel } ({ answerFee })</span>;
-      noLabel = <span>{ noLabel } ({ answerFee })</span>;
+      yesLabel = <div>{ yesLabel }<div>({ answerFee })</div></div>;
+      noLabel = <div>{ noLabel }<div>({ answerFee })</div></div>;
+      maybeLabel = <div>{ maybeLabel }<div>({ answerFee })</div></div>;
     }
 
     return (
@@ -36,10 +38,17 @@ export default class NewQuestionModal extends Component {
         buttons={ [
           <Button
             disabled={ store.hasCurrentVoted }
+            icon='thumbs-o-up'
             label={ yesLabel }
             onClick={ this.onClickYes } />,
           <Button
             disabled={ store.hasCurrentVoted }
+            icon='hand-paper-o'
+            label={ maybeLabel }
+            onClick={ this.onClickMaybe } />,
+          <Button
+            disabled={ store.hasCurrentVoted }
+            icon='thumbs-o-down'
             label={ noLabel }
             onClick={ this.onClickNo } />
         ] }
@@ -55,12 +64,17 @@ export default class NewQuestionModal extends Component {
   }
 
   onClickYes = () => {
-    this.props.store.newAnswer(true);
+    this.props.store.newAnswer(1);
     this.onClose();
   }
 
   onClickNo = () => {
-    this.props.store.newAnswer(false);
+    this.props.store.newAnswer(0);
+    this.onClose();
+  }
+
+  onClickMaybe = () => {
+    this.props.store.newAnswer(2);
     this.onClose();
   }
 }

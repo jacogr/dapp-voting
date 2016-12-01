@@ -2,7 +2,7 @@
 
 import React, { Component, PropTypes } from 'react';
 
-import styles from './error.css';
+import styles from './index.css';
 
 export default class Error extends Component {
   static propTypes = {

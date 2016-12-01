@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 
 import Button from './button';
 
-import styles from './navigation.css';
+import styles from './index.css';
 
 @observer
 export default class Navigation extends Component {
@@ -16,44 +16,74 @@ export default class Navigation extends Component {
   render () {
     const { store } = this.props;
     const isEmpty = store.count === 0;
+    const isSingle = store.count === 1;
 
     return (
       <div className={ styles.navigation }>
-        <Button label='< prev' disabled={ isEmpty } onClick={ store.prevQuestion } />
-        <Button label='random' disabled={ isEmpty } onClick={ store.randomQuestion } />
-        <div disabled={ isEmpty } className={ styles.inputButton }>
-          <input
-            disabled={ isEmpty }
-            type='number'
-            min='1'
-            max={ store.count }
-            step='1'
-            value={ store.queryIndex }
-            onChange={ this.changeIndex } />
-          <Button label='go' disabled={ isEmpty } onClick={ this.setIndex } />
-        </div>
-        <Button label='next >' disabled={ isEmpty } onClick={ store.nextQuestion } />
-        <div>
-          <Button label='answer question' disabled={ isEmpty } onClick={ this.newAnswer } />
-          <Button label='new question' onClick={ this.newQuestion } />
-        </div>
+        <Button
+          icon='arrow-left'
+          label='prev'
+          disabled={ isEmpty || isSingle }
+          onClick={ store.prevQuestion } />
+        <Button
+          className={ styles.spaced }
+          icon='arrow-right'
+          label='next'
+          disabled={ isEmpty || isSingle }
+          onClick={ store.nextQuestion } />
+        <Button
+          icon='info'
+          label='help'
+          onClick={ this.openInfo } />
+        {
+          !isEmpty && store.canClose
+            ? <Button
+              icon='lock'
+              label='lock'
+              onClick={ this.openCloseQuestion } />
+            : null
+        }
+        <Button
+          icon='microphone'
+          label='answer'
+          disabled={ isEmpty || !store.question || store.question.closed }
+          onClick={ this.openNewAnswer } />
+        <Button
+          className={ styles.spaced }
+          icon='commenting'
+          label='question'
+          onClick={ this.openNewQuestion } />
+        <Button
+          icon='random'
+          label='random'
+          disabled={ isEmpty || isSingle }
+          onClick={ store.randomQuestion } />
+        <Button
+          icon='search'
+          label='find'
+          disabled={ isEmpty || isSingle }
+          onClick={ this.openSearch } />
       </div>
     );
   }
 
-  changeIndex = (event) => {
-    this.props.store.setQueryIndex(event.target.value);
+  openCloseQuestion = () => {
+    this.props.store.toggleCloseQuestionModal();
   }
 
-  setIndex = () => {
-    this.props.store.loadQuery();
+  openInfo = () => {
+    this.props.store.toggleInfoModal();
   }
 
-  newAnswer = () => {
+  openNewAnswer = () => {
     this.props.store.toggleNewAnswerModal();
   }
 
-  newQuestion = () => {
+  openNewQuestion = () => {
     this.props.store.toggleNewQuestionModal();
+  }
+
+  openSearch = () => {
+    this.props.store.toggleSearchModal();
   }
 }

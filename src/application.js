@@ -4,14 +4,15 @@ import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 
 import Error from './error';
-import EventsNewQuestion from './eventsNewQuestion';
+import ModalInfo from './modalInfo';
+import ModalCloseQuestion from './modalCloseQuestion';
+import ModalNewAnswer from './modalNewAnswer';
+import ModalNewQuestion from './modalNewQuestion';
+import ModalSearch from './modalSearch';
 import Navigation from './navigation';
-import NewAnswerModal from './newAnswerModal';
-import NewQuestionModal from './newQuestionModal';
 import Question from './question';
-import Status from './status';
 
-import styles from './application.css';
+import styles from './index.css';
 
 @observer
 export default class Application extends Component {
@@ -24,13 +25,14 @@ export default class Application extends Component {
 
     return (
       <div className={ styles.application }>
-        <Status store={ store } />
         <Navigation store={ store } />
-        <NewAnswerModal store={ store } />
-        <NewQuestionModal store={ store } />
-        <Question store={ store } />
-        <EventsNewQuestion store={ store } />
         <Error error={ store.error } />
+        <ModalInfo store={ store } />
+        <ModalCloseQuestion store={ store } />
+        <ModalNewAnswer store={ store } />
+        <ModalNewQuestion store={ store } />
+        <ModalSearch store={ store } />
+        <Question store={ store } />
       </div>
     );
   }

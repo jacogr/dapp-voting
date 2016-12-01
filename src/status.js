@@ -4,9 +4,9 @@ import BigNumber from 'bignumber.js';
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 
-import styles from './status.css';
+import { api } from './parity';
 
-const { api } = window.parity;
+import styles from './index.css';
 
 @observer
 export default class Status extends Component {

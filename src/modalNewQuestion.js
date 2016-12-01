@@ -3,18 +3,18 @@
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 
+import { api } from './parity';
+
 import AccountSelector from './AccountSelector';
 import Button from './button';
 import Modal from './modal';
 
-import styles from './newQuestionModal.css';
-
-const { api } = window.parity;
+import styles from './index.css';
 
 const MAX_CHARACTERS = 160;
 
 @observer
-export default class NewQuestionModal extends Component {
+export default class ModalNewQuestion extends Component {
   static propTypes = {
     store: PropTypes.object.isRequired
   }
@@ -32,9 +32,9 @@ export default class NewQuestionModal extends Component {
       return null;
     }
 
-    let submitLabel = 'submit';
+    let submitLabel = 'ask';
     if (store.questionFee.gt(0)) {
-      submitLabel = <span>{ submitLabel } (<small>{ api.util.fromWei(store.questionFee).toFormat(3) } ETH</small>)</span>;
+      submitLabel = <div>{ submitLabel }<div><small>({ api.util.fromWei(store.questionFee).toFormat(3) } ETH</small>)</div></div>;
     }
 
     return (
@@ -42,6 +42,7 @@ export default class NewQuestionModal extends Component {
         buttons={ [
           <Button
             disabled={ questionCharactersLeft >= 156 || questionCharactersLeft < 0 }
+            icon='question'
             label={ submitLabel }
             onClick={ this.onSubmit } />
         ] }
@@ -52,7 +53,7 @@ export default class NewQuestionModal extends Component {
           placeholder='The actual question to ask'
           value={ question }
           onChange={ this.onChangeQuestion } />
-        <div className={ `${styles.lengthCount} ${questionCharactersLeft < 0 ? styles.error : ''}` }>
+        <div className={ `${styles.textareaInfo} ${questionCharactersLeft < 0 ? styles.error : ''}` }>
           { questionCharactersLeft } character{ questionCharactersLeft === 1 ? '' : 's'} remaining
         </div>
       </Modal>

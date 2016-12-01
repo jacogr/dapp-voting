@@ -2,10 +2,13 @@
 
 import React, { Component, PropTypes } from 'react';
 
+import styles from './index.css';
+
 export default class Button extends Component {
   static propTypes = {
     className: PropTypes.string,
     disabled: PropTypes.bool,
+    icon: PropTypes.string,
     label: PropTypes.oneOfType([
       PropTypes.node,
       PropTypes.string
@@ -14,15 +17,19 @@ export default class Button extends Component {
   }
 
   render () {
-    const { className, disabled, label } = this.props;
+    const { className, disabled, icon, label } = this.props;
 
     return (
-      <button
-        className={ className }
-        disabled={ disabled }
-        onClick={ this.onClick }>
-        { label }
-      </button>
+      <div className={ `${styles.button} ${className}` }>
+        <button
+          disabled={ disabled }
+          onClick={ this.onClick }>
+          <i className={ `fa fa-${icon}` } />
+        </button>
+        <div className={ styles.label }>
+          { label }
+        </div>
+      </div>
     );
   }
 

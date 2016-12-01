@@ -28,19 +28,18 @@ contract Owned {
 // the voting contract
 contract Voting is Owned {
   // emitted when a new question was asked
-  event NewQuestion(address indexed owner, uint index, string question);
+  event NewQuestion(address indexed owner, uint indexed index, string question);
 
   // emitted when a new answer is provided
-  event NewAnswer(uint indexed index, uint value, bool isYes);
+  event NewAnswer(uint indexed index, uint indexed answer, uint value);
 
   // define a question with totals & voters
   struct Question {
+    bool closed;
     address owner;
-    uint valueNo;
-    uint valueYes;
-    uint votesNo;
-    uint votesYes;
     string question;
+    mapping (uint => uint) balances;
+    mapping (uint => uint) votes;
     mapping (address => bool) voters;
   }
 
@@ -48,7 +47,7 @@ contract Voting is Owned {
   Question[] questions;
 
   // total voting tallies
-  uint public totalValue = 0;
+  uint public totalBalance = 0;
   uint public totalVotes = 0;
 
   // the applicable question & answer fees
@@ -57,13 +56,31 @@ contract Voting is Owned {
 
   // has the fee been paid to answer
   modifier is_answer_paid {
-    if (msg.value < answerFee) throw;
+    if (msg.sender != owner && msg.value < answerFee) throw;
     _;
   }
 
   // has the fee been paid to ask a question
   modifier is_question_paid {
-    if (msg.value < questionFee) throw;
+    if (msg.sender != owner && msg.value < questionFee) throw;
+    _;
+  }
+
+  // is the sender either the question or contract owner
+  modifier is_either_owner (uint _index) {
+    if (questions[_index].owner != msg.sender && owner != msg.sender) throw;
+    _;
+  }
+
+  // is the question in an open state
+  modifier is_open (uint _index) {
+    if (questions[_index].closed == true) throw;
+    _;
+  }
+
+  // does the answer value conform to the tri-state
+  modifier is_valid_answer (uint _answer) {
+    if (_answer > 2) throw;
     _;
   }
 
@@ -74,15 +91,20 @@ contract Voting is Owned {
   }
 
   // is the question of acceptable length
-  modifier is_short_question (string _question) {
-    if (bytes(_question).length > 160) throw;
+  modifier has_question_length (string _question) {
+    if (bytes(_question).length < 4 || bytes(_question).length > 160) throw;
     _;
   }
 
-  // has the voter not voted already
-  modifier has_not_voted (uint _index) {
+  // has the sender not answered already
+  modifier has_not_answered (uint _index) {
     if (questions[_index].voters[msg.sender] == true) throw;
     _;
+  }
+
+  // contract setup
+  function Voting () {
+    newQuestion('Hungry?');
   }
 
   // the number of questions asked
@@ -91,15 +113,20 @@ contract Voting is Owned {
   }
 
   // details for a specific question
-  function get (uint _index) constant returns (address owner, uint valueNo, uint valueYes, uint votesNo, uint votesYes, string question) {
+  function get (uint _index) constant returns (bool closed, address owner, string question, uint balanceNo, uint balanceYes, uint balanceMaybe, uint votesNo, uint votesYes, uint votesMaybe) {
     Question q = questions[_index];
 
+    closed = q.closed;
     owner = q.owner;
-    valueNo = q.valueNo;
-    valueYes = q.valueYes;
-    votesNo = q.votesNo;
-    votesYes = q.votesYes;
     question = q.question;
+
+    balanceNo = q.balances[0];
+    balanceYes = q.balances[1];
+    balanceMaybe = q.balances[2];
+
+    votesNo = q.votes[0];
+    votesYes = q.votes[1];
+    votesMaybe = q.votes[2];
   }
 
   // tests if the sender has voted
@@ -107,8 +134,15 @@ contract Voting is Owned {
     return questions[_index].voters[msg.sender];
   }
 
+  // close the question for further answers
+  function closeQuestion (uint _index) is_either_owner(_index) returns (bool) {
+    questions[_index].closed = true;
+
+    return true;
+  }
+
   // ask a new question
-  function newQuestion (string _question) payable is_question_paid is_short_question(_question) returns (bool) {
+  function newQuestion (string _question) payable is_question_paid has_question_length(_question) returns (bool) {
     uint index = questions.length;
 
     questions.length += 1;
@@ -121,21 +155,15 @@ contract Voting is Owned {
   }
 
   // answer a question
-  function newAnswer (uint _index, bool _isYes) payable is_answer_paid is_valid_question(_index) has_not_voted(_index) returns (bool) {
+  function newAnswer (uint _index, uint _answer) payable is_answer_paid is_valid_question(_index) is_open(_index) has_not_answered(_index) is_valid_answer(_answer) returns (bool) {
     totalVotes += 1;
-    totalValue += msg.sender.balance;
+    totalBalance += msg.sender.balance;
 
     questions[_index].voters[msg.sender] = true;
+    questions[_index].balances[_answer] += msg.sender.balance;
+    questions[_index].votes[_answer] += 1;
 
-    if (_isYes) {
-      questions[_index].valueYes += msg.sender.balance;
-      questions[_index].votesYes += 1;
-    } else {
-      questions[_index].valueNo += msg.sender.balance;
-      questions[_index].votesNo += 1;
-    }
-
-    NewAnswer(_index, msg.sender.balance, _isYes);
+    NewAnswer(_index, _answer, msg.sender.balance);
 
     return true;
   }
@@ -143,20 +171,23 @@ contract Voting is Owned {
   // adjust the fee for providing answers
   function setAnswerFee (uint _fee) only_owner returns (bool) {
     answerFee = _fee;
+
     return true;
   }
 
   // adjust the fee for asking questions
   function setQuestionFee (uint _fee) only_owner returns (bool) {
     questionFee = _fee;
+
     return true;
   }
 
   // drain all accumulated funds
-  function drain() only_owner  returns (bool) {
+  function drain() only_owner returns (bool) {
     if (!msg.sender.send(this.balance)) {
       throw;
     }
+
     return true;
   }
 }

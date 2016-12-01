@@ -3,12 +3,14 @@
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 
+import { api } from './parity';
+
 import Chart from './chart';
 import EventsNewAnswer from './eventsNewAnswer';
 
-import styles from './question.css';
+import styles from './index.css';
 
-const { api } = window.parity;
+const STATES = ['Yes', 'No', 'Maybe'];
 
 @observer
 export default class Question extends Component {
@@ -18,7 +20,7 @@ export default class Question extends Component {
 
   render () {
     const { store } = this.props;
-    const { answerEvents, question, questionIndex } = store;
+    const { question, questionIndex } = store;
 
     if (questionIndex === -1) {
       return null;
@@ -31,22 +33,28 @@ export default class Question extends Component {
             #{questionIndex}: { question.question }
           </div>
           <div className={ styles.byline }>
-            { question.votesNo.add(question.votesYes).toFormat(0) } answers with a total value of { api.util.fromWei(question.valueNo.add(question.valueYes)).toFormat(3) }<small>ETH</small>
+            { question.votesNo.add(question.votesYes).add(question.votesMaybe).toFormat(0) } answers with a total value of { api.util.fromWei(question.valueNo.add(question.valueYes).add(question.valueMaybe)).toFormat(3) }<small>ETH</small>
           </div>
         </div>
         <div className={ styles.answers }>
           <Chart
-            labels={ [ 'Yes Votes', 'No Votes' ] }
+            title='Number of Votes'
+            labels={ STATES }
             values={ [
-              question.votesYes.toNumber(), question.votesNo.toNumber()
+              question.votesYes.toNumber(),
+              question.votesNo.toNumber(),
+              question.votesMaybe.toNumber()
             ] } />
           <Chart
-            labels={ [ 'Yes Value', 'No Value' ] }
+            title='Value of Votes'
+            labels={ STATES }
             values={ [
-              api.util.fromWei(question.valueYes).toNumber(), api.util.fromWei(question.valueNo).toNumber()
+              api.util.fromWei(question.valueYes).toNumber(),
+              api.util.fromWei(question.valueNo).toNumber(),
+              api.util.fromWei(question.valueMaybe).toNumber()
             ] } />
         </div>
-        <EventsNewAnswer events={ answerEvents } />
+        <EventsNewAnswer store={ store } />
       </div>
     );
   }

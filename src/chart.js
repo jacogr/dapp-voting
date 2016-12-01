@@ -3,33 +3,39 @@
 import React, { Component, PropTypes } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 
-import styles from './chart.css';
+import styles from './index.css';
 
 export default class Chart extends Component {
   static propTypes = {
     labels: PropTypes.array.isRequired,
+    title: PropTypes.string,
     values: PropTypes.array.isRequired
   }
 
   render () {
-    const { labels, values } = this.props;
+    const { labels, title, values } = this.props;
 
     return (
       <div className={ styles.chart }>
+        <div className={ styles.title }>{ title }</div>
         <Doughnut
           data={ {
             labels,
             datasets: [ {
               data: values,
               backgroundColor: [
-                '#4f4', '#f44'
+                '#4d4', '#d44', '#44d'
               ],
               hoverBackgroundColor: [
-                '#1f1', '#f11'
+                '#4f4', '#f44', '#44f'
               ]
             } ]
           } }
-          options={ {} }
+          options={ {
+            legend: {
+              fontSize: 16
+            }
+          } }
           height={ 100 }
           width={ 100 } />
       </div>

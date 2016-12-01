@@ -61,7 +61,7 @@ module.exports = {
         loader: 'file-loader?name=dist/[hash].[ext]'
       },
       {
-        test: /\.(woff(2)|ttf|eot|svg|otf)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        test: /\.(eot|svg|ttf|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: 'file-loader?name=dist/[hash].[ext]'
       }
     ],
