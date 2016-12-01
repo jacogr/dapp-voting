@@ -84,7 +84,7 @@ $header-size: 2em;
 .button {
   display: inline-block;
   margin: $button-margin;
-  min-width: 5em;
+  min-width: 4.5em;
   text-align: center;
 
   button {
@@ -318,7 +318,7 @@ $header-size: 2em;
   }
 
   .spaced {
-    margin-right: 3em;
+    margin-right: 2em;
   }
 }
 

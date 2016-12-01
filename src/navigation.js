@@ -35,14 +35,6 @@ export default class Navigation extends Component {
           icon='info'
           label='help'
           onClick={ this.openInfo } />
-        {
-          !isEmpty && store.canClose
-            ? <Button
-              icon='lock'
-              label='lock'
-              onClick={ this.openCloseQuestion } />
-            : null
-        }
         <Button
           icon='microphone'
           label='answer'
@@ -59,10 +51,16 @@ export default class Navigation extends Component {
           disabled={ isEmpty || isSingle }
           onClick={ store.randomQuestion } />
         <Button
+          className={ styles.spaced }
           icon='search'
           label='find'
           disabled={ isEmpty || isSingle }
           onClick={ this.openSearch } />
+        <Button
+          icon='lock'
+          label='lock'
+          disabled={ isEmpty || !store.canClose }
+          onClick={ this.openCloseQuestion } />
       </div>
     );
   }
