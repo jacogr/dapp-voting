@@ -25,9 +25,9 @@ export default class Store {
   @observable questionFee = new BigNumber(0);
   @observable questionIndex = -1;
   @observable questionLoading = false;
+  @observable showAccountModal = false;
   @observable showCloseQuestionModal = false;
   @observable showInfoModal = false;
-  @observable showNewAnswerModal = false;
   @observable showNewQuestionModal = false;
   @observable showSearchModal = false;
   @observable totalVotes = new BigNumber(0);
@@ -73,6 +73,7 @@ export default class Store {
         .map((address) => {
           const account = accountsInfo[address];
           account.address = address;
+          account.name = account.name ? account.name.toLowerCase() : 'unnamed';
           return account;
         });
 
@@ -158,16 +159,16 @@ export default class Store {
     this.questionLoading = loading;
   }
 
+  @action toggleAccountModal = () => {
+    this.showAccountModal = !this.showAccountModal;
+  }
+
   @action toggleCloseQuestionModal = () => {
     this.showCloseQuestionModal = !this.showCloseQuestionModal;
   }
 
   @action toggleInfoModal = () => {
     this.showInfoModal = !this.showInfoModal;
-  }
-
-  @action toggleNewAnswerModal = () => {
-    this.showNewAnswerModal = !this.showNewAnswerModal;
   }
 
   @action toggleNewQuestionModal = () => {
@@ -464,7 +465,7 @@ export default class Store {
     return this._voting.instance
       .closeQuestion.estimateGas(options, values)
       .then((gas) => {
-        options.gas = gas.mul(1.2).toFixed(0);
+        options.gas = gas.mul(1.33).toFixed(0);
         return this._voting.instance.closeQuestion.postTransaction(options, values);
       })
       .catch((error) => {
@@ -480,7 +481,7 @@ export default class Store {
     return this._voting.instance
       .newAnswer.estimateGas(options, values)
       .then((gas) => {
-        options.gas = gas.mul(1.2).toFixed(0);
+        options.gas = gas.mul(1.33).toFixed(0);
         return this._voting.instance.newAnswer.postTransaction(options, values);
       })
       .catch((error) => {
@@ -496,7 +497,7 @@ export default class Store {
     return this._voting.instance
       .newQuestion.estimateGas(options, values)
       .then((gas) => {
-        options.gas = gas.mul(1.2).toFixed(0);
+        options.gas = gas.mul(1.33).toFixed(0);
         return this._voting.instance.newQuestion.postTransaction(options, values);
       })
       .catch((error) => {

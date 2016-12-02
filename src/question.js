@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 
 import { api } from './parity';
 
+import Button from './button';
 import Chart from './chart';
 import EventsNewAnswer from './eventsNewAnswer';
 
@@ -21,6 +22,7 @@ export default class Question extends Component {
   render () {
     const { store } = this.props;
     const { question, questionIndex } = store;
+    const cannotVote = store.hasCurrentVoted || !question || question.closed;
 
     if (questionIndex === -1) {
       return null;
@@ -35,6 +37,23 @@ export default class Question extends Component {
           <div className={ styles.byline }>
             { question.votesNo.add(question.votesYes).add(question.votesMaybe).toFormat(0) } answers with a total value of { api.util.fromWei(question.valueNo.add(question.valueYes).add(question.valueMaybe)).toFormat(3) }<small>ETH</small>
           </div>
+        </div>
+        <div className={ styles.answerButtons }>
+          <Button
+            disabled={ cannotVote }
+            icon='thumbs-o-up'
+            label='yes'
+            onClick={ this.onClickAnswerYes } />
+          <Button
+            disabled={ cannotVote }
+            icon='hand-paper-o'
+            label='maybe'
+            onClick={ this.onClickAnswerMaybe } />
+          <Button
+            disabled={ cannotVote }
+            icon='thumbs-o-down'
+            label='no'
+            onClick={ this.onClickAnswerNo } />
         </div>
         <div className={ styles.answers }>
           <Chart
@@ -57,5 +76,17 @@ export default class Question extends Component {
         <EventsNewAnswer store={ store } />
       </div>
     );
+  }
+
+  onClickAnswerYes = () => {
+    this.props.store.newAnswer(1);
+  }
+
+  onClickAnswerNo = () => {
+    this.props.store.newAnswer(0);
+  }
+
+  onClickAnswerMaybe = () => {
+    this.props.store.newAnswer(2);
   }
 }

@@ -3,6 +3,7 @@
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 
+import AccountButton from './accountButton';
 import Button from './button';
 
 import styles from './index.css';
@@ -20,47 +21,44 @@ export default class Navigation extends Component {
 
     return (
       <div className={ styles.navigation }>
-        <Button
-          icon='arrow-left'
-          label='prev'
-          disabled={ isEmpty || isSingle }
-          onClick={ store.prevQuestion } />
-        <Button
-          className={ styles.spaced }
-          icon='arrow-right'
-          label='next'
-          disabled={ isEmpty || isSingle }
-          onClick={ store.nextQuestion } />
-        <Button
-          icon='info'
-          label='help'
-          onClick={ this.openInfo } />
-        <Button
-          icon='microphone'
-          label='answer'
-          disabled={ isEmpty || !store.question || store.question.closed }
-          onClick={ this.openNewAnswer } />
-        <Button
-          className={ styles.spaced }
-          icon='commenting'
-          label='question'
-          onClick={ this.openNewQuestion } />
-        <Button
-          icon='random'
-          label='random'
-          disabled={ isEmpty || isSingle }
-          onClick={ store.randomQuestion } />
-        <Button
-          className={ styles.spaced }
-          icon='search'
-          label='find'
-          disabled={ isEmpty || isSingle }
-          onClick={ this.openSearch } />
-        <Button
-          icon='lock'
-          label='lock'
-          disabled={ isEmpty || !store.canClose }
-          onClick={ this.openCloseQuestion } />
+        <div className={ styles.moveButtons }>
+          <Button
+            icon='arrow-left'
+            label='prev'
+            disabled={ isEmpty || isSingle }
+            onClick={ store.prevQuestion } />
+          <Button
+            icon='arrow-right'
+            label='next'
+            disabled={ isEmpty || isSingle }
+            onClick={ store.nextQuestion } />
+          <Button
+            icon='search'
+            label='find'
+            disabled={ isEmpty || isSingle }
+            onClick={ this.openSearch } />
+          <Button
+            icon='random'
+            label='random'
+            disabled={ isEmpty || isSingle }
+            onClick={ store.randomQuestion } />
+        </div>
+        <div className={ styles.actionButtons }>
+          <AccountButton store={ store } />
+          <Button
+            icon={ store.canClose || (store.question && store.question.closed) ? 'lock' : 'unlock' }
+            label='lock'
+            disabled={ isEmpty || !store.canClose }
+            onClick={ this.openCloseQuestion } />
+          <Button
+            icon='commenting'
+            label='question'
+            onClick={ this.openNewQuestion } />
+          <Button
+            icon='info'
+            label='info'
+            onClick={ this.openInfo } />
+        </div>
       </div>
     );
   }
@@ -71,10 +69,6 @@ export default class Navigation extends Component {
 
   openInfo = () => {
     this.props.store.toggleInfoModal();
-  }
-
-  openNewAnswer = () => {
-    this.props.store.toggleNewAnswerModal();
   }
 
   openNewQuestion = () => {

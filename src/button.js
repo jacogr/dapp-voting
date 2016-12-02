@@ -13,18 +13,21 @@ export default class Button extends Component {
       PropTypes.node,
       PropTypes.string
     ]).isRequired,
+    style: PropTypes.object,
     onClick: PropTypes.func.isRequired
   }
 
   render () {
-    const { className, disabled, icon, label } = this.props;
+    const { className, disabled, icon, label, style } = this.props;
 
     return (
-      <div className={ `${styles.button} ${className}` }>
+      <div className={ styles.button }>
         <button
+          className={ className }
           disabled={ disabled }
+          style={ style }
           onClick={ this.onClick }>
-          <i className={ `fa fa-${icon}` } />
+          { icon ? <i className={ `fa fa-${icon}` } /> : null }
         </button>
         <div className={ styles.label }>
           { label }

@@ -59,6 +59,11 @@ export default class ModalSearch extends Component {
     this.onClose();
   }
 
+  onClickRandom = () => {
+    this.props.store.randomQuestion();
+    this.onClose();
+  }
+
   changeIndex = (event) => {
     this.setState({ index: parseInt(event.target.value, 10) });
   }

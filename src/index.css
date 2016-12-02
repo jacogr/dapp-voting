@@ -26,19 +26,37 @@ $header-size: 2em;
   vertical-align: top;
 }
 
-:root,
-:root body,
-:root :global(#container) {
-  min-height: 100%;
-  width: 100%;
-}
+.accountSelector {
+  border: 0;
+  border-collapse: collapse;
+  margin: 0 auto;
 
-:root * {
-  font-weight: 300 !important;
-}
+  tr {
+    cursor: pointer;
 
-:root :global(#container) > div {
-  flex: 1;
+    &:hover, &.selected {
+      background: #f80;
+      color: white;
+    }
+  }
+
+  td {
+    padding: 0.5em 1em;
+
+    .address {
+      opacity: 0.75;
+    }
+
+    .image {
+      width: 4em;
+      height: 4em;
+      border-radius: 2em;
+    }
+
+    .name {
+      font-size: 1.5em;
+    }
+  }
 }
 
 .application {
@@ -84,7 +102,7 @@ $header-size: 2em;
 .button {
   display: inline-block;
   margin: $button-margin;
-  min-width: 4.5em;
+  min-width: 4em;
   text-align: center;
 
   button {
@@ -93,10 +111,12 @@ $header-size: 2em;
     border-radius: 3em;
     color: #fff;
     cursor: pointer;
+    height: 6em;
     outline: none;
     padding: 1.5em;
     text-align: center;
     vertical-align: middle;
+    width: 6em;
 
     i {
       font-size: 3em;
@@ -128,8 +148,8 @@ $header-size: 2em;
 .chart {
   display: inline-block;
   padding: 1em;
-  height: 20em;
-  width: 20em;
+  height: 30vw;
+  width: 30vw;
 
   .chartTitle {
     color: $header-color;
@@ -154,8 +174,8 @@ $header-size: 2em;
 
   .container {
     margin: 0 auto;
-    max-width: 50em;
-    padding: 1.75em 0 8em 0;
+    max-width: 60em;
+    padding: 3em;
   }
 
   .event {
@@ -164,6 +184,7 @@ $header-size: 2em;
     margin: 0.25em;
     padding: 0.25em 0.5em;
     color: white;
+    cursor: default;
 
     &.pending {
       opacity: 0.5;
@@ -171,14 +192,26 @@ $header-size: 2em;
 
     &.yay {
       background: #4d4;
+
+      &:hover {
+        background: #4e4;
+      }
     }
 
     &.nay {
       background: #d44;
+
+      &:hover {
+        background: #e44;
+      }
     }
 
     &.may {
-      background: #44d;
+      background: #dd4;
+
+      &:hover {
+        background: #ee4;
+      }
     }
   }
 }
@@ -273,8 +306,8 @@ $header-size: 2em;
 
   .close {
     position: absolute;
-    right: 1em;
-    top: 1em;
+    right: 0.75em;
+    top: 0.75em;
   }
 
   .title {
@@ -286,39 +319,24 @@ $header-size: 2em;
 }
 
 .navigation {
-  background: rgba(255, 255, 255, 0.75);
-  bottom: 0;
-  left: 0;
-  padding: 0.25em 0;
-  position: fixed;
-  right: 0;
-  text-align: center;
-  z-index: 50;
-
-  .inputButton {
-    background: $button-color;
-    border-radius: $button-radius;
-    display: inline-block;
-    margin: $button-margin;
-    padding: 0;
-
-    &[disabled] {
-      background: $button-disabled-color;
-    }
-
-    button {
-      margin: 0;
-    }
-
-    input {
-      width: 5em;
-      margin: 0 0 0 0.25em;
-      text-align: right;
-    }
+  .actionButtons, .moveButtons {
+    background: rgba(255, 255, 255, 0.75);
+    display: flex;
+    flex-wrap: nowrap;
+    position: fixed;
+    z-index: 50;
   }
 
-  .spaced {
-    margin-right: 2em;
+  .actionButtons {
+    flex-direction: column;
+    right: 0.75em;
+    top: 0.75em;
+  }
+
+  .moveButtons {
+    flex-direction: column;
+    left: 0.75em;
+    top: 0.75em;
   }
 }
 
@@ -334,14 +352,19 @@ $header-size: 2em;
   }
 
   .header {
-    padding: 1.75em 7.5em;
+    padding: 1.75em;
   }
 
   .title {
     margin: 0 auto;
     max-width: 30em;
+    padding: 0 2em;
     color: $header-color;
     font-size: $header-size;
+  }
+
+  .answerButtons {
+    text-align: center;
   }
 }
 

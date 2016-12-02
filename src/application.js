@@ -6,7 +6,7 @@ import { observer } from 'mobx-react';
 import Error from './error';
 import ModalInfo from './modalInfo';
 import ModalCloseQuestion from './modalCloseQuestion';
-import ModalNewAnswer from './modalNewAnswer';
+import ModalAccountSelector from './modalAccountSelector';
 import ModalNewQuestion from './modalNewQuestion';
 import ModalSearch from './modalSearch';
 import Navigation from './navigation';
@@ -27,9 +27,9 @@ export default class Application extends Component {
       <div className={ styles.application }>
         <Navigation store={ store } />
         <Error error={ store.error } />
+        <ModalAccountSelector store={ store } />
         <ModalInfo store={ store } />
         <ModalCloseQuestion store={ store } />
-        <ModalNewAnswer store={ store } />
         <ModalNewQuestion store={ store } />
         <ModalSearch store={ store } />
         <Question store={ store } />

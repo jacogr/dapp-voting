@@ -5,7 +5,6 @@ import { observer } from 'mobx-react';
 
 import { api } from './parity';
 
-import AccountSelector from './AccountSelector';
 import Button from './button';
 import Modal from './modal';
 
@@ -48,7 +47,6 @@ export default class ModalNewQuestion extends Component {
         ] }
         title='submit a new question'
         onClose={ this.onClose }>
-        <AccountSelector store={ store } />
         <textarea
           placeholder='The actual question to ask'
           value={ question }

@@ -37,7 +37,7 @@ export default class EventsNewAnswer extends Component {
         <div
           className={ `${styles.event} ${event.state === 'pending' ? styles.pending : ''} ${styles[['nay', 'yay', 'may'][event.params.answer]]}` }
           key={ event.key }>
-          <i className={ `fa fa-${['thumbs-down', 'thumbs-up', 'hand-paper-o'][event.params.answer]}` } /> { api.util.fromWei(event.params.value).toFormat(3) }
+          <i className={ `fa fa-${['thumbs-o-down', 'thumbs-o-up', 'hand-paper-o'][event.params.answer]}` } /> { api.util.fromWei(event.params.value).toFormat(3) }
         </div>
       );
     });

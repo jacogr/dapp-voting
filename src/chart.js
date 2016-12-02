@@ -24,10 +24,10 @@ export default class Chart extends Component {
             datasets: [ {
               data: values,
               backgroundColor: [
-                '#4d4', '#d44', '#44d'
+                '#4d4', '#d44', '#dd4'
               ],
               hoverBackgroundColor: [
-                '#4f4', '#f44', '#44f'
+                '#4e4', '#e44', '#ee4'
               ]
             } ]
           } }
