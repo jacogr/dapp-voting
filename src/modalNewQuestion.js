@@ -33,7 +33,7 @@ export default class ModalNewQuestion extends Component {
 
     let submitLabel = 'ask';
     if (store.questionFee.gt(0)) {
-      submitLabel = <div>{ submitLabel }<div><small>({ api.util.fromWei(store.questionFee).toFormat(3) } ETH</small>)</div></div>;
+      submitLabel = <div>{ submitLabel } <small>({ api.util.fromWei(store.questionFee).toFormat(3) } ETH</small>)</div>;
     }
 
     return (

@@ -142,7 +142,7 @@ $header-size: 2em;
 
 .buttonRow {
   margin: 1em 0 2em 0;
-  text-align: right;
+  text-align: center;
 }
 
 .chart {
@@ -175,7 +175,7 @@ $header-size: 2em;
   .container {
     margin: 0 auto;
     max-width: 60em;
-    padding: 3em;
+    padding: 3em 3em 0 3em;
   }
 
   .event {
@@ -272,8 +272,8 @@ $header-size: 2em;
 
   .content {
     margin: 0 auto;
-    max-width: 40em;
-    padding: 0;
+    max-width: 45em;
+    padding: 0 5em;
 
     input, textarea, select {
       display: block;
@@ -295,6 +295,7 @@ $header-size: 2em;
       margin: 0;
       padding: 0 0 1em 0;
       line-height: 1.5em;
+      font-size: 1em;
     }
 
     b {
@@ -376,9 +377,9 @@ $header-size: 2em;
 }
 
 .textareaInfo {
-  font-size: 0.75em;
+  font-size: 1em;
   padding-top: 0.5em;
-  text-align: right;
+  text-align: center;
 
   &.error {
     color: #f33;

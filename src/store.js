@@ -9,6 +9,8 @@ import { api } from './parity';
 import registryAbi from './abi/registry.json';
 import votingAbi from './abi/voting.json';
 
+const LS_ADDRESS = 'dappvoting:address';
+
 export default class Store {
   @observable accounts = [];
   @observable answerEvents = [];
@@ -77,8 +79,10 @@ export default class Store {
           return account;
         });
 
+      const savedAddress = window.localStorage.getItem(LS_ADDRESS);
+
       this.accounts = this.addresses.filter((account) => account.uuid);
-      this.currentAccount = this.accounts[0];
+      this.currentAccount = this.accounts.find((account) => account.address === savedAddress) || this.accounts[0];
     });
 
     return this.accounts;
@@ -99,6 +103,7 @@ export default class Store {
   @action setCurrentAccount = (address) => {
     this.currentAccount = this.accounts.find((account) => account.address === address);
     this.checkVoteStatus();
+    window.localStorage.setItem(LS_ADDRESS, address);
   }
 
   @action setStats = (owner, count, totalValue, totalVotes, answerFee, questionFee) => {

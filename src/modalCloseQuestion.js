@@ -30,7 +30,8 @@ export default class ModalCloseQuestion extends Component {
         ] }
         title={ `lock question #${store.questionIndex}` }
         onClose={ this.onClose }>
-        The question owner can lock and close the question, disallowing any more answers. Historic results will still be visible and available for browsing. This operation is permanent and cannot be undone.
+        <p>The question owner can lock and close the question, disallowing any more answers. Historic results will still be visible and available for browsing. This operation is permanent and cannot be undone.</p>
+        <p>Are you sure you want to close this question?</p>
       </Modal>
     );
   }

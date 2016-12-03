@@ -93,46 +93,41 @@ module.exports = {
       autoprefixer: true
     })
   ],
-  plugins: (function () {
-    const plugins = [
-      new HappyPack({
-        id: 'css',
-        threads: 4,
-        loaders: [
-          'style',
-          'css?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
-          'postcss'
-        ]
-      }),
-      new HappyPack({
-        id: 'js',
-        threads: 4,
-        loaders: isProd ? ['babel'] : ['babel?cacheDirectory=true']
-      }),
-      new WebpackErrorNotificationPlugin(),
-      new webpack.DefinePlugin({
-        'process.env': {
-          NODE_ENV: JSON.stringify(ENV)
-        }
-      })
-    ];
-
-    if (isProd) {
-      plugins.push(new webpack.optimize.OccurrenceOrderPlugin(false));
-      plugins.push(new webpack.optimize.DedupePlugin());
-      plugins.push(new webpack.optimize.UglifyJsPlugin({
-        screwIe8: true,
-        compress: {
-          warnings: false
-        },
-        output: {
-          comments: false
-        }
-      }));
-    }
-
-    return plugins;
-  }()),
+  plugins: [
+    new HappyPack({
+      id: 'css',
+      threads: 4,
+      loaders: [
+        'style',
+        'css?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
+        'postcss'
+      ]
+    }),
+    new HappyPack({
+      id: 'js',
+      threads: 4,
+      loaders: isProd ? ['babel'] : ['babel?cacheDirectory=true']
+    }),
+    new WebpackErrorNotificationPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify(ENV)
+      }
+    }),
+    new webpack.optimize.OccurrenceOrderPlugin(false),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      screwIe8: true,
+      minimize: true,
+      sourceMap: false,
+      output: {
+        comments: false
+      },
+      compressor: {
+        warnings: false
+      }
+    })
+  ],
   devServer: {
     contentBase: `./${DEST}`,
     historyApiFallback: false,
