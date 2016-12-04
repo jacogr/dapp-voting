@@ -46,7 +46,7 @@ export default class Navigation extends Component {
         <div className={ styles.actionButtons }>
           <AccountButton store={ store } />
           <Button
-            icon={ store.canClose || (store.question && store.question.closed) ? 'lock' : 'unlock' }
+            icon={ (store.question && store.question.closed) ? 'lock' : 'unlock' }
             label='lock'
             disabled={ isEmpty || !store.canClose }
             onClick={ this.openCloseQuestion } />
