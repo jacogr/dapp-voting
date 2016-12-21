@@ -68,20 +68,18 @@ export default class Store {
     this.blocks = Object.assign({}, this.blocks, { [blockNumber]: block });
   }
 
-  @action setAccounts = (accountsInfo) => {
+  @action setAccounts = (addresses, accountsInfo) => {
+    const savedAddress = window.localStorage.getItem(LS_ADDRESS);
+
     transaction(() => {
-      this.addresses = Object
-        .keys(accountsInfo)
-        .map((address) => {
-          const account = accountsInfo[address];
-          account.address = address;
-          account.name = account.name ? account.name.toLowerCase() : 'unnamed';
-          return account;
-        });
+      this.accounts = addresses.map((address) => {
+        const account = accountsInfo[address];
 
-      const savedAddress = window.localStorage.getItem(LS_ADDRESS);
+        account.address = address;
+        account.name = account.name ? account.name.toLowerCase() : 'unnamed';
 
-      this.accounts = this.addresses.filter((account) => account.uuid);
+        return account;
+      });
       this.currentAccount = this.accounts.find((account) => account.address === savedAddress) || this.accounts[0];
     });
 
@@ -215,10 +213,13 @@ export default class Store {
   }
 
   loadAccounts () {
-    return api.parity
-      .accounts()
-      .then((accountsInfo) => {
-        this.setAccounts(accountsInfo);
+    return Promise
+      .all([
+        api.eth.accounts(),
+        api.parity.accounts()
+      ])
+      .then(([addresses, accountsInfo]) => {
+        this.setAccounts(addresses, accountsInfo);
       })
       .catch((error) => {
         console.error('Store:loadAccounts', error);
