@@ -31,7 +31,10 @@ export default class AccountButton extends Component {
         disabled={ !store.accounts || !store.accounts.length }
         label={ label }
         style={ style }
-        onClick={ store.toggleAccountModal } />
+        onClick={ this.onClick } />
     );
+  }
+
+  onClick = () => {
   }
 }

@@ -9,8 +9,6 @@ import { api } from './parity';
 import registryAbi from './abi/registry.json';
 import votingAbi from './abi/voting.json';
 
-const LS_ADDRESS = 'dappvoting:address';
-
 export default class Store {
   @observable accounts = [];
   @observable answerEvents = [];
@@ -68,9 +66,7 @@ export default class Store {
     this.blocks = Object.assign({}, this.blocks, { [blockNumber]: block });
   }
 
-  @action setAccounts = (addresses, accountsInfo) => {
-    const savedAddress = window.localStorage.getItem(LS_ADDRESS);
-
+  @action setAccounts = (defaultAccount, addresses, accountsInfo) => {
     transaction(() => {
       this.accounts = addresses.map((address) => {
         const account = accountsInfo[address];
@@ -80,7 +76,8 @@ export default class Store {
 
         return account;
       });
-      this.currentAccount = this.accounts.find((account) => account.address === savedAddress) || this.accounts[0];
+
+      this.setCurrentAccount(this.accounts.find((account) => account.address === defaultAccount));
     });
 
     return this.accounts;
@@ -98,10 +95,9 @@ export default class Store {
     this.blockNumber = blockNumber;
   }
 
-  @action setCurrentAccount = (address) => {
-    this.currentAccount = this.accounts.find((account) => account.address === address);
+  @action setCurrentAccount = (account) => {
+    this.currentAccount = account;
     this.checkVoteStatus();
-    window.localStorage.setItem(LS_ADDRESS, address);
   }
 
   @action setStats = (owner, count, totalValue, totalVotes, answerFee, questionFee) => {
@@ -215,15 +211,23 @@ export default class Store {
   loadAccounts () {
     return Promise
       .all([
+        api.parity.defaultAccount(),
         api.eth.accounts(),
-        api.parity.accounts()
+        api.parity.accountsInfo()
       ])
-      .then(([addresses, accountsInfo]) => {
-        this.setAccounts(addresses, accountsInfo);
+      .then(([defaultAccount, addresses, accountsInfo]) => {
+        this.setAccounts(defaultAccount, addresses, accountsInfo);
+
+        return true;
       })
       .catch((error) => {
         console.error('Store:loadAccounts', error);
         this.setError(error);
+
+        return false;
+      })
+      .then(() => {
+        setTimeout(() => this.loadAccounts(), 1000);
       });
   }
 
@@ -339,7 +343,7 @@ export default class Store {
 
   attachContract () {
     return this._registry.instance
-      .getAddress.call({}, [api.util.sha3('jg-dapp-voting'), 'A'])
+      .getAddress.call({}, [api.util.sha3('jg-voting'), 'A'])
       .then((votingAddress) => {
         if (new BigNumber(votingAddress).eq(0)) {
           throw new Error('Unable to find the contract in the registry');
@@ -451,6 +455,10 @@ export default class Store {
   }
 
   checkVoteStatus () {
+    if (!this._voting) {
+      return Promise.resolve(false);
+    }
+
     const options = { from: this.currentAccount.address };
     const values = [this.questionIndex - 1];
 
@@ -488,7 +496,9 @@ export default class Store {
       .newAnswer.estimateGas(options, values)
       .then((gas) => {
         options.gas = gas.mul(1.33).toFixed(0);
-        return this._voting.instance.newAnswer.postTransaction(options, values);
+
+        return this._voting.instance
+          .newAnswer.postTransaction(options, values);
       })
       .catch((error) => {
         console.error('Store:newAnswer', error);
@@ -504,7 +514,9 @@ export default class Store {
       .newQuestion.estimateGas(options, values)
       .then((gas) => {
         options.gas = gas.mul(1.33).toFixed(0);
-        return this._voting.instance.newQuestion.postTransaction(options, values);
+
+        return this._voting.instance
+          .newQuestion.postTransaction(options, values);
       })
       .catch((error) => {
         console.error('Store:newQuestion', error);
